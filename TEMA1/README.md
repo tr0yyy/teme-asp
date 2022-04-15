@@ -1,4 +1,4 @@
 # Arhitectura Sistemelor Paralele
-## Repository privat cu temele pentru colocviu
+## Tema 1
 ---
-Pe acest repository sunt temele mele de la ASP.
+Cerinta este in "how_to.pdf"
