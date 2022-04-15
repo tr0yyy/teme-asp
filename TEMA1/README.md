@@ -20,3 +20,7 @@ Utilizare:
 display output_image_640x480_T.pmg
 ```
 unde T este cel de mai sus utilizat la executie.
+
+Rezultat:
+
+<img src="https://i.imgur.com/nHL3y6g.png" alt="Fotografie rezultata cu 4 threaduri si 1200 iteratii" width="600"/>
