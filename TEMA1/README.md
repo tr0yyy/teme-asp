@@ -1,7 +1,7 @@
 # Arhitectura Sistemelor Paralele
 ## Tema 1
 
-Cerinta este in "how_to.pdf"\
+Cerinta este in "how_to.pdf"
 
 Pentru a compila:
 ```bash
