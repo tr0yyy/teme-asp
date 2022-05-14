@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
      */
 
     MPI_Cart_coords(comm_2D, my_rank, NDIM, coords);
-    if((coords[0] + coords[1] + 1) % 2 == 1) {
+    if((coords[0] + coords[1] + 1) % 2 == 0) {
         for(i = 0 ; i < (XSIZE / NX) * (YSIZE / NY) ; i++) {
             data[i] = 0;
         }

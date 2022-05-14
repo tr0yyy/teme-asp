@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
         for(i = 0 ; i < GSIZE ; i++) {
             masterdata[i] = 0.75 * CONTRAST;
         }
-    } 
+    }
     data = (float*) malloc ((XSIZE / NX) * (YSIZE / NY) * sizeof(float));
     for(i = 0 ; i < (XSIZE / NX) * (YSIZE / NY) ; i++) {
         data[i] = 0.75 * CONTRAST;
@@ -53,10 +53,8 @@ int main(int argc, char **argv) {
      * 
      */
 
-    MPI_Datatype lineType, colType;
-
     MPI_Cart_coords(comm_2D, my_rank, NDIM, coords);
-    if((coords[0] + coords[1] + 1) % 2 == 1) {
+    if((coords[0] + coords[1] + 1) % 2 == 0) {
         for(i = 0 ; i < (XSIZE / NX) * (YSIZE / NY) ; i++) {
             data[i] = 0;
         }
@@ -69,6 +67,8 @@ int main(int argc, char **argv) {
     dX = XSIZE / NX;
     dY = YSIZE / NY;
 
+    MPI_Datatype lineType, colType;
+
     MPI_Type_vector(1, dY, 1, MPI_FLOAT, &lineType);
     MPI_Type_commit(&lineType);
 
@@ -78,12 +78,20 @@ int main(int argc, char **argv) {
     int up, down, left, right;
 
     MPI_Cart_shift(comm_2D, 0, 1, &up, &down);
-    MPI_Cart_shift(comm_2D, 1, 1, &left, &right);
+    MPI_Sendrecv(data + dY, 1, lineType, up, 3,
+                 data + (dX - 1) * dY, 1, lineType, down, 3,
+                 comm_2D, &status);
+    MPI_Sendrecv(data + (dX - 2) * dY, 1, lineType, down, 4,
+                 data, 1, lineType, up, 4,
+                 comm_2D, &status);
 
-    MPI_Sendrecv(data + dY, 1, lineType, up, 3, data + (dX - 1) * dY, 1, lineType, down, 3, comm_2D, &status);
-    MPI_Sendrecv(data + (dX - 1) * dY, 1, lineType, down, 3, data + dY, 1, lineType, up, 3, comm_2D, &status);
-
-
+    MPI_Cart_shift(comm_2D, 0, 1, &left, &right);
+    MPI_Sendrecv(data + 1, 1, colType, left, 5,
+                 data + dX - 1, 1, colType, right, 5,
+                 comm_2D, &status);
+    MPI_Sendrecv(data + dX - 2, 1, colType, right, 5,
+                 data, 1, colType, left, 5,
+                 comm_2D, &status);
 
     MPI_Type_vector(dX, dY, YSIZE, MPI_FLOAT, &blockType);
     MPI_Type_commit(&blockType);
